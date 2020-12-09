@@ -27,11 +27,11 @@ describe('Esperas...', () => {
     })
 
     it.only('Uso do find', () => {
-        cy.get('#buttonList').click()
-        cy.get('#lista li')
-            .find('span')
-            .should('contain', 'Item 1')
-            //quando nao acha algo, ele retorna ao comando anterior
+        cy.get('#buttonListDOM').click()
+        // cy.get('#lista li')
+        //     .find('span')
+        //     .should('contain', 'Item 1')
+        //quando nao acha algo, ele retorna ao comando anterior
         cy.get('#lista li span')
             .should('contain', 'Item 2')
         
