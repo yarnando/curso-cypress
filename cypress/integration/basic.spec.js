@@ -8,6 +8,10 @@ describe('Cypress basics', () => {
         //title = title DA ABA
         //cy.pause()
 
+        cy.title().then(title => {
+            console.log(title);
+        })
+
         cy.title().should('be.equal', 'Campo de Treinamento')
         //cy.title().should('contain', 'Campo').debug()
 
