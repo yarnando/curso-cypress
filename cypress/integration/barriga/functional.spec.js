@@ -27,4 +27,11 @@ describe('Should test at a functional level', () => {
         cy.get(loc.MESSAGE).should('contain', 'Conta atualizada com sucesso')        
     });
 
+    it('Should not create an account with same name', () => {
+        cy.acessarMenuConta()
+        cy.get(loc.CONTAS.NOME).type('Conta alterada')
+        cy.get(loc.CONTAS.BTN_SALVAR).click();
+        cy.get(loc.MESSAGE).should('contain', 'code 400')
+    })
+
 })
