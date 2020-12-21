@@ -49,7 +49,66 @@ describe('Should test at a functional level', () => {
     })
 
     it('Should create an account', () => {
+
+        cy.route({
+					method: "GET",
+					url: "/contas",
+					response: [
+						{
+							id: 1,
+							nome: "Carteira",
+							visivel: true,
+							usuario_id: 1,
+						},
+						{
+							id: 2,
+							nome: "Banco",
+							visivel: true,
+							usuario_id: 1,
+						},
+					],
+                }).as("contas")
+                
+        cy.route({
+					method: "POST",
+					url: "/contas",
+					response: [
+						{
+							id: 3,
+							nome: "Conta de teste",
+							visivel: true,
+							usuario_id: 1,
+						},
+					],
+				}).as("saveConta")
+
         cy.acessarMenuConta()
+
+        cy.route({
+            method: "GET",
+            url: "/contas",
+            response: [
+                {
+                    id: 1,
+                    nome: "Carteira",
+                    visivel: true,
+                    usuario_id: 1,
+                },
+                {
+                    id: 2,
+                    nome: "Banco",
+                    visivel: true,
+                    usuario_id: 1,
+                },
+                {
+                    id: 3,
+                    nome: "Conta de teste",
+                    visivel: true,
+                    usuario_id: 1,
+                },                
+            ],
+        }).as("contasSave")
+
         cy.inserirConta('Conta de teste')
         cy.get(loc.MESSAGE).should('contain', 'Conta inserida com sucesso')
     })
@@ -85,7 +144,7 @@ describe('Should test at a functional level', () => {
         cy.xpath(loc.EXTRATO.FN_XP_BUSCA_ELEMENTO('Desc', '123')).should('exist')
     });
 
-    it.only('Should get balance', () => {
+    it('Should get balance', () => {
         cy.get(loc.MENU.HOME).click()
         cy.xpath(loc.SALDO.FN_XP_SALDO_CONTA('Conta para saldo')).should('contain', '534,00')
         cy.get(loc.MENU.EXTRATO).click();
