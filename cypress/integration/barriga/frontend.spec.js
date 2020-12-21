@@ -113,14 +113,65 @@ describe('Should test at a functional level', () => {
         cy.get(loc.MESSAGE).should('contain', 'Conta inserida com sucesso')
     })
 
-    it('Should update and account', () => {
+    it.only('Should update and account', () => {
+
+        cy.route({
+            method: "GET",
+            url: "/contas",
+            response: [
+                {
+                    id: 1,
+                    nome: "Carteira",
+                    visivel: true,
+                    usuario_id: 1,
+                },
+                {
+                    id: 2,
+                    nome: "Banco",
+                    visivel: true,
+                    usuario_id: 1,
+                },
+            ],
+        }).as("contas")
+
+        cy.route({
+            method: "PUT",
+            url: "/contas/**",
+            response:
+            {
+                id: 1,
+                nome: "Conta alterada",
+                visivel: true,
+                usuario_id: 1,
+            },
+        }).as("putConta")        
+
         cy.acessarMenuConta()
-        cy.xpath(loc.CONTAS.FN_XP_BTN_ALTERAR('Conta para alterar')).click()
+        cy.xpath(loc.CONTAS.FN_XP_BTN_ALTERAR('Carteira')).click()
         cy.get(loc.CONTAS.NOME)
             .clear()
-            .type('Conta alterada')        
+            .type('Conta alterada')   
+            cy.route({
+                method: "GET",
+                url: "/contas",
+                response: [
+                    {
+                        id: 1,
+                        nome: "Conta alterada",
+                        visivel: true,
+                        usuario_id: 1,
+                    },
+                    {
+                        id: 2,
+                        nome: "Banco",
+                        visivel: true,
+                        usuario_id: 1,
+                    },
+                ],
+            }).as("contasUpdate")                 
         cy.get(loc.CONTAS.BTN_SALVAR).click()
-        cy.get(loc.MESSAGE).should('contain', 'Conta atualizada com sucesso')        
+        cy.get(loc.MESSAGE).should('contain', 'Conta atualizada com sucesso')           
+
     });
 
     it('Should not create an account with same name', () => {
