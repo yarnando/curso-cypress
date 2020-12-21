@@ -110,18 +110,41 @@ describe('Should test at a functional level', () => {
     });
 
     it('Should not create an account with same name', () => {
+
+        cy.route({
+            method: "POST",
+            url: "/contas",
+            response: {
+                "error": "Já existe uma conta com esse nome!"
+            },
+            status: 400
+        }).as("saveContaMesmoNome")
+
         cy.acessarMenuConta()
         cy.get(loc.CONTAS.NOME).type('Conta mesmo nome')
         cy.get(loc.CONTAS.BTN_SALVAR).click();
         cy.get(loc.MESSAGE).should('contain', 'code 400')
     })
 
-    it('Should create a transaction', () => {
+    it.only('Should create a transaction', () => {
+
+        cy.route({
+            method: 'POST',
+            url: '/transacoes',
+            response: {"id":326753,"descricao":"Desc","envolvido":"asdadsa","observacao":null,"tipo":"REC","data_transacao":"2020-12-21T03:00:00.000Z","data_pagamento":"2020-12-21T03:00:00.000Z","valor":"100.00","status":true,"conta_id":358600,"usuario_id":12685,"transferencia_id":null,"parcelamento_id":null}
+        })
+
+        cy.route({
+            method: "GET",
+            url: "/extrato/**",
+            response: 'fixture:movimentacaoSalva'
+        }).as("extrato");        
+
         cy.get(loc.MENU.MOVIMENTACAO).click()
         cy.get(loc.MOVIMENTACAO.DESCRICAO).type('Desc');
         cy.get(loc.MOVIMENTACAO.VALOR).type('123');
         cy.get(loc.MOVIMENTACAO.INTERESSADO).type('Inter');
-        cy.get(loc.MOVIMENTACAO.CONTA).select('Conta para movimentacoes');
+        cy.get(loc.MOVIMENTACAO.CONTA).select('Banco');
         cy.get(loc.MOVIMENTACAO.STATUS).click();
         cy.get(loc.MOVIMENTACAO.BTN_SALVAR).click();
         cy.get(loc.MESSAGE).should('contain', 'sucesso');
