@@ -13,8 +13,8 @@ import loc from './locators'
 
 Cypress.Commands.add("login", (email, password) => { 
     cy.visit('https://barrigareact.wcaquino.me/') 
-    cy.get(loc.LOGIN.USER).type('bbbb@gmail.com')
-    cy.get(loc.LOGIN.PASSWORD).type('123')
+    cy.get(loc.LOGIN.USER).type(email)
+    cy.get(loc.LOGIN.PASSWORD).type(password)
     cy.get(loc.LOGIN.BTN_LOGIN).click()
     cy.get(loc.MESSAGE).should('contain', 'Bem vindo');
 })
